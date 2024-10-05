@@ -4,20 +4,29 @@ declare(strict_types=1);
 
 namespace app\controllers;
 
+use yii\filters\auth\HttpBearerAuth;
 use yii\rest\ActiveController;
 
-class UserController extends ActiveController
+class UserAuthController extends ActiveController
 {
     public $modelClass = 'app\models\User';
 
+    public function behaviors(): array
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'class' => HttpBearerAuth::class,
+        ];
+        return $behaviors;
+    }
 
     public function actions(): array
     {
         $actions = parent::actions();
 
         unset(
-            $actions['index'],
             $actions['view'],
+            $actions['create'],
             $actions['update'],
             $actions['delete'],
             $actions['options'],
@@ -25,4 +34,6 @@ class UserController extends ActiveController
 
         return $actions;
     }
+
+
 }
